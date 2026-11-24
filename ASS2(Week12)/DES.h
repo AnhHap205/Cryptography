@@ -120,4 +120,25 @@ constexpr uint8_t SBOX[8][4][16] = {
     }
 };
 
+// Ham hoan vi dau - IP va hoan vi dao - IP^-1
+uint64_t IP_function(uint64_t plaintext);
+uint64_t IP_inverse_function(uint64_t input);
+
+// Ham mo rong - E va ham vong f
+uint64_t E_function(uint32_t input);
+uint32_t f_function(uint32_t R, uint64_t K);
+
+// Ham hoan vi P, PC1, PC2 va sinh khoa con
+uint32_t P_function(uint32_t input);
+uint64_t PC1_function(uint64_t key);
+uint64_t PC2_function(uint64_t key);
+uint64_t left_shift(uint64_t input, int shift);
+void gen_subkeys(uint64_t key, uint64_t K[16]);
+
+// Hma ma hoa va giai ma
+uint64_t process_block(uint64_t input, uint64_t key, bool decrypt);
+uint64_t encrypt(uint64_t plaintext, uint64_t key);
+uint64_t decrypt(uint64_t ciphertext, uint64_t key);
+
+
 #endif 
