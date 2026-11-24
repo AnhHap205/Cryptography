@@ -69,3 +69,14 @@ uint32_t f_function(uint32_t R, uint64_t K) {
 uint64_t left_shift(uint64_t input, int shift) {
     return ((input << shift) | (input >> (28 - shift))) & 0x0FFFFFFF;       // dich trai 28 bits va lay 28 bits 
 }
+
+void tao_khoa_con(uint64_t key, uint64_t K[16]) {
+    uint64_t cd = PC1_function(key);
+    uint64_t nua_trai = (cd >> 28) & 0x0FFFFFFF;
+    uint64_t nua_phai = cd & 0x0FFFFFFF;
+    for (int i = 0; i < 16; i++) {
+        nua_trai = left_shift(nua_trai, SHIFTS[i]);
+        nua_phai = left_shift(nua_phai, SHIFTS[i]);
+        K[i] = PC2_function((nua_trai << 28) | nua_phai);
+    }
+}
