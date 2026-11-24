@@ -26,3 +26,30 @@ uint64_t E_function(uint32_t input) {
     }
     return ket_qua;
 }
+
+uint64_t P_function(uint32_t input) {
+    uint64_t ket_qua = 0;
+    for (int i = 0; i < 32; i++) {
+        uint64_t bit = (input >> (32 - P[i])) & 1;
+        ket_qua = (ket_qua << 1) | bit;
+    }
+    return ket_qua;
+}
+
+uint64_t PC1_function(uint64_t key) {
+    uint64_t ket_qua = 0;
+    for (int i = 0; i < 64; i++) {
+        uint64_t bit = (key >> (64 - PC1[i])) & 1;
+        ket_qua = (ket_qua << 1) | bit;
+    }
+    return ket_qua;
+}
+
+uint64_t PC2_function(uint64_t key) {
+    uint64_t ket_qua = 0;
+    for (int i = 0; i < 64; i++) {
+        uint64_t bit = (key >> (64 - PC2[i])) & 1;
+        ket_qua = (ket_qua << 1) | bit;
+    }
+    return ket_qua;
+}
