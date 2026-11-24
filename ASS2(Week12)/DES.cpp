@@ -27,7 +27,7 @@ uint64_t E_function(uint32_t input) {
     return ket_qua;
 }
 
-uint64_t P_function(uint32_t input) {
+uint32_t P_function(uint32_t input) {
     uint64_t ket_qua = 0;
     for (int i = 0; i < 32; i++) {
         uint64_t bit = (input >> (32 - P[i])) & 1;
@@ -38,7 +38,7 @@ uint64_t P_function(uint32_t input) {
 
 uint64_t PC1_function(uint64_t key) {
     uint64_t ket_qua = 0;
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 56; i++) {
         uint64_t bit = (key >> (64 - PC1[i])) & 1;
         ket_qua = (ket_qua << 1) | bit;
     }
@@ -102,9 +102,9 @@ uint64_t ham_xu_ly(uint64_t input, uint64_t key, bool decrypt) {
 }
 
 uint64_t encrypt(uint64_t plaintext, uint64_t key) {
-    return process_block(plaintext, key, false);
+    return ham_xu_ly(plaintext, key, false);
 }
 
 uint64_t decrypt(uint64_t ciphertext, uint64_t key) {
-    return process_block(ciphertext, key, true);
+    return ham_xu_ly(ciphertext, key, true);
 }
