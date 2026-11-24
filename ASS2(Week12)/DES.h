@@ -133,10 +133,10 @@ uint32_t P_function(uint32_t input);
 uint64_t PC1_function(uint64_t key);
 uint64_t PC2_function(uint64_t key);
 uint64_t left_shift(uint64_t input, int shift);
-void gen_subkeys(uint64_t key, uint64_t K[16]);
+void tao_khoa_con(uint64_t key, uint64_t K[16]);
 
 // Hma ma hoa va giai ma
-uint64_t process_block(uint64_t input, uint64_t key, bool decrypt);
+uint64_t ham_xu_ly(uint64_t input, uint64_t key, bool decrypt);
 uint64_t encrypt(uint64_t plaintext, uint64_t key);
 uint64_t decrypt(uint64_t ciphertext, uint64_t key);
 
