@@ -80,3 +80,31 @@ void tao_khoa_con(uint64_t key, uint64_t K[16]) {
         K[i] = PC2_function((nua_trai << 28) | nua_phai);
     }
 }
+
+// Ham xu ly ma hoa va giai ma
+uint64_t ham_xu_ly(uint64_t input, uint64_t key, bool decrypt) {
+    uint64_t K[16];
+    tao_khoa_con(key, K);
+
+    uint64_t sau_IP = IP_function(input);
+    uint32_t L = (uint32_t)(sau_IP >> 32);
+    uint32_t R = (uint32_t)(sau_IP & 0xFFFFFFFF);
+
+    for (int i = 0; i < 16; i++) {
+        uint64_t khoa_con = decrypt ? K[15 - i] : K[i];
+        uint32_t R_cu = R;
+        R = L ^ f_function(R, khoa_con);
+        L = R_cu;
+    }
+
+    uint64_t truoc_IP_dao = ((uint64_t)R << 32) | L;
+    return IP_inverse_function(truoc_IP_dao);
+}
+
+uint64_t encrypt(uint64_t plaintext, uint64_t key) {
+    return process_block(plaintext, key, false);
+}
+
+uint64_t decrypt(uint64_t ciphertext, uint64_t key) {
+    return process_block(ciphertext, key, true);
+}
