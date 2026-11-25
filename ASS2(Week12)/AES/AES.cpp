@@ -76,6 +76,83 @@ void inv_mix_columns (uint8_t state[16]) {
 // Addroundkey
 void add_round_key(uint8_t state[16], const uint8_t round_key[16]) {
     for (int i = 0; i < 16; i++) {
-        state[i] ^= round_key[i];          // XOR state với khoa con tung vong
+        state[i] ^= round_key[i];            // XOR state với khoa con tung vong
+    }
+}
+
+// Mo rong khoa
+void mo_rong_khoa(const uint8_t key[16], uint8_t khoa_mo_rong[So_byte_khoa]) {
+    for (int i = 0; i < 16; i++) {
+        khoa_mo_rong[i] = key[i];           // 4 tu khoa dau = khoa doc
+    }   
+    for (int i = 4; i < 4 * (So_vong + 1); i++) {
+        uint8_t temp[4];
+        for (int j = 0; j < 4; j++) {
+            temp[j] = khoa_mo_rong[4 * (i - 1) + j];
+        }
+        if (i % 4 == 0) {
+            uint8_t t = temp[0];            // Dich trai 1 byte
+            temp[0] = temp[1];
+            temp[1] = temp[2];
+            temp[2] = temp[3];
+            temp[3] = t;
+
+            for (int j = 0; j < 4; j++) {
+                temp[j] = Sbox[temp[j]];    // Thay gtri byte bang gtri Sbox
+            }
+           
+            temp[0] ^= RCON[i];     // XOR hang so vong 
+        }
+        for (int j = 0; j < 4; j++) {
+            khoa_mo_rong[4 * i + j] = khoa_mo_rong[4 * (i - 4) + j] ^ temp[j];
+        }
+    }
+}
+
+void encrypt_aes(const uint8_t plaintext[16], const uint8_t key[16], uint8_t ciphertext[16]) {
+    uint8_t state[16];
+    uint8_t round_keys[So_byte_khoa];
+    mo_rong_khoa(key, round_keys);                          // Mo rong khoa goc
+
+    for (int i = 0; i < 16; i++) {
+        state[i] = plaintext[i];
+    }
+
+    add_round_key(state, round_keys);
+
+    for (int round = 1; round <= So_vong; round++) {
+        sub_bytes(state);
+        shift_rows(state);
+        mix_columns(state);
+        add_round_key(state, round_keys + round * 16);      // Thuc hien cac vong AES
+    }
+
+    for (int i = 0; i < 16; i++) {
+        ciphertext[i] = state[i];
+    }
+}
+
+void decrypt_aes(const uint8_t ciphertext[16], const uint8_t key[16], uint8_t plaintext[16]) {
+    uint8_t state[16];
+    uint8_t round_keys[So_byte_khoa];
+    mo_rong_khoa(key, round_keys);                          // Mo rong khoa goc
+
+    for (int i = 0; i < 16; i++) {
+        state[i] = ciphertext[i];
+    }
+
+    for (int round = So_vong; round > 0; round--) {
+        inv_shift_rows(state);
+        inv_sub_bytes(state);
+        add_round_key(state, round_keys + round * 16);
+        inv_mix_columns(state);                              // Thuc hien cac vong AES nguoc
+    }
+
+    inv_shift_rows(state);
+    inv_sub_bytes(state);
+    add_round_key(state, round_keys);                       // Vong 0
+
+    for (int i = 0; i < 16; i++) {
+        plaintext[i] = state[i];
     }
 }
