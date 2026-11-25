@@ -48,5 +48,22 @@ constexpr uint8_t RCON[10] = {
     0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36
 };
 
+uint8_t nhan_x(uint8_t a);                  // a*x trong GF(2^8) voi modulo = x^8 + x^4 + x^3 + x + 1
+uint8_t nhan_gf(uint8_t a, uint8_t b);      // a*b trong GF(2^8)
 
-#endif
+// Cac phep bien doi trong AES
+
+void sub_bytes(uint8_t state[16]);         // Thay gtri byte trong state bang gtri Sbox
+void inv_sub_bytes(uint8_t state[16]);    
+void shift_rows(uint8_t state[16]);        // Dich vong trai theo hang
+void inv_shift_rows(uint8_t state[16]);    
+void mix_columns(uint8_t state[16]);       // Tron bit theo tung cot
+void inv_mix_columns(uint8_t state[16]);
+void add_round_key(uint8_t state[16], const uint8_t round_key[16]);  // XOR state voi khoa con cua tung vong
+
+void mo_rong_khoa(const uint8_t key[16], uint8_t khoa_mo_rong[So_byte_khoa]);
+
+void encrypt_aes(const uint8_t plaintext[16], const uint8_t key[16], uint8_t ciphertext[16]);
+void decrypt_aes(const uint8_t ciphertext[16], const uint8_t key[16], uint8_t plaintext[16]);
+
+#endif 
