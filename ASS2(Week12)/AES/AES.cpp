@@ -120,12 +120,17 @@ void encrypt_aes(const uint8_t plaintext[16], const uint8_t key[16], uint8_t cip
 
     add_round_key(state, round_keys);
 
-    for (int round = 1; round <= So_vong; round++) {
+    for (int round = 1; round < So_vong; round++) {
         sub_bytes(state);
         shift_rows(state);
         mix_columns(state);
         add_round_key(state, round_keys + round * 16);      // Thuc hien cac vong AES
     }
+
+    sub_bytes(state);
+    shift_rows(state);
+    add_round_key(state, round_keys + So_vong * 16);        // Vong 10 khong mixcolumn
+
 
     for (int i = 0; i < 16; i++) {
         ciphertext[i] = state[i];
@@ -141,7 +146,9 @@ void decrypt_aes(const uint8_t ciphertext[16], const uint8_t key[16], uint8_t pl
         state[i] = ciphertext[i];
     }
 
-    for (int round = So_vong; round > 0; round--) {
+    add_round_key(state, round_keys + So_vong * 16);        // Vong 10 khong mixcolumn
+
+    for (int round = So_vong - 1; round > 0; round--) {
         inv_shift_rows(state);
         inv_sub_bytes(state);
         add_round_key(state, round_keys + round * 16);
@@ -150,7 +157,7 @@ void decrypt_aes(const uint8_t ciphertext[16], const uint8_t key[16], uint8_t pl
 
     inv_shift_rows(state);
     inv_sub_bytes(state);
-    add_round_key(state, round_keys);                       // Vong 0
+    add_round_key(state, round_keys);                        // Vong 0
 
     for (int i = 0; i < 16; i++) {
         plaintext[i] = state[i];
