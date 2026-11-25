@@ -101,7 +101,7 @@ void mo_rong_khoa(const uint8_t key[16], uint8_t khoa_mo_rong[So_byte_khoa]) {
                 temp[j] = Sbox[temp[j]];    // Thay gtri byte bang gtri Sbox
             }
            
-            temp[0] ^= RCON[i];     // XOR hang so vong 
+            temp[0] ^= RCON[i/4 - 1];       // XOR hang so vong 
         }
         for (int j = 0; j < 4; j++) {
             khoa_mo_rong[4 * i + j] = khoa_mo_rong[4 * (i - 4) + j] ^ temp[j];
